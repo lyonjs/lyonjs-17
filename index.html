@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+
+        <title>High Performance Computing in the browser</title>
+
+        <meta name="description" content="efficiency for computation in the browser">
+        <meta name="author" content="fabien Cellier">
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <link rel="stylesheet" href="css/reveal.min.css">
+        <link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+        <!-- For syntax highlighting -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+        <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+        <script>
+            document.write('<link rel="stylesheet" href="css/print/' + (window.location.search.match(/print-pdf/gi) ? 'pdf' : 'paper') + '.css" type="text/css" media="print">');
+        </script>
+
+        <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+
+        <div class="reveal">
+
+            <!-- Any section element inside of this container is displayed as a slide -->
+            <div class="slides">
+                <section>
+                    <h2>HPC dans le navigateur?</h2>
+                    <h3>l'efficacité dans les calculs pour le browser</h3>
+                    <p>
+                        <small>Created by <a>Fabien Cellier</a> </small>
+                    </p>
+                </section>
+                <section>
+                    <section>
+                        <h1> Introduction</h1>
+                    </section>
+                    <section>
+                        <h3>Fabien Cellier?</h3>
+
+                        <p>WebCL(security+firefox),modélisation 3d,SIG...</p>
+
+                    </section>
+                    <section>
+                        <h3>HPC, définition, histoire....</h3>
+                        <ul>
+                            <li class="fragment">
+                                grille, superordinateur<br> <small>(avec problème intrinsèque: chaleur, énérgie...)</small>
+                            </li>
+                            <li class="fragment">
+                                lien avec le calcul parallèle et évolution vers le MPI
+                            </li>
+                            <li class="fragment">
+                                Pour parler de navigateur? <br>-> L'approche "opportunist +  patterns"
+                                <br> -> partie code efficace
+                            </li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>Efficacité du code, pourquoi?</h3>
+                        <ul>
+                            <li class="fragment">Simulation (astres, catastrophes, météo)</li>
+                            <li class="fragment">Statistiques,</li>
+                            <li class="fragment">Vidéos (3d, reconnaissance)....</li>
+                        </ul>
+                        <p class="fragment">Il y a deux types de besoins: la base latence qui repose sur du code efficace 
+                            principalement et le traitement de big data qui repose sur le partitionnement</p>
+                        <p class="fragment"><strong>PAS BESOIN de PERFORMANCE PARTOUT!!! (IHM)</strong></p>
+                    </section>
+
+                </section>
+                <section>
+                    <section>
+                        <h1>Informations utiles</h1>
+                    </section>
+                    <section>
+                        <h3>Optimisation du code</h3>
+                        <p class="fragment">L'optimisation reste complexe (scheduling, <em>"cache miss"</em>...) 
+                            et parfois peu portable (CUDA/OpenCL utilise souvent un code pour CPU et un autre pour GPU etc...)</p>
+
+                        <p class="fragment"><small>mais toujours comparer de facon honnete: CPU intel xeon octo-core
+                                c'est 256 unités de calcul si on comptabilise les unités pour la vectorisation 
+                                donc comparable à un GPU milieu de gamme</small></p>
+                    </section>
+                    <section>
+                        <h3>Parallèlisme</h3>
+                        <ul>
+                            <li class="fragment">SIMD</li>
+                            <li class="fragment">MIMD</li>
+                            <li class="fragment">MPI</li>
+                            <li class="fragment">...</li>
+                        </ul>
+                        <p class="fragment"> Le parallélisme est souvent le chemin le plus simple
+                            pour augmenter les performances</p>
+                    </section>
+                    <section>
+                        <h3>Javascript efficace? problèmes</h3>
+                        <ul>
+                            <li class="fragment">le design</li>
+                            <li class="fragment">le design</li>
+                            <li class="fragment">le design</li>
+                            <li class="fragment">...</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>Javascript efficace? problèmes [2]</h3>
+                        <ul>
+                            <li class="fragment">le boxing</li>
+                            <li class="fragment">manière de gérer la sécurité</li>
+                            <li class="fragment">le GC</li>
+                            <li class="fragment">l'absence d'information bas niveau pour le compilateur
+                                <br>(comparé au C++)</li>
+                            <li class="fragment">manque de parallélisme de données</li>
+                            <li class="fragment">...</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>quelques chiffres</h3>
+                        <p>Une simulation sur 2 millions de particules (32 itérations), utilise intensivement des arbres et tableaux</p>
+                        <ul>
+                            <li class="fragment"><strong>Javascript naif</strong>: 100 secondes (pour 10 minutes de dev)</li>
+                            <li class="fragment"><strong>Javascript optimisé</strong>: 31 secondes (2 heures de dev,emscripten)</li>
+                            <li class="fragment"><strong>asm.js naif</strong>: 8.2 secondes (pour 2h de dev)</li>
+                            <li class="fragment"><strong>GPGPU sur GPU(webCL like, sécurisé)</strong>: 120 ms (pour 3h de dev)</li>
+                            <li class="fragment"><strong>GPGPU sur CPU(webCL like, sécurisé)</strong>: 110 ms (pour 5h de dev)</li>
+                        </ul>
+                        <p><small>intel core i5 3320M et intel hd graphic 3k</small>
+                        </p>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h3>Les évolutions</h3>
+                    </section>
+                    <section>
+                        <img src='./img/cw.png' alt=''>
+                    </section>
+                    <section>
+                        <h3>PJS (javascript next...)</h3>
+                        <p>SIMD pour js?</p>
+                        <pre><code>
+result = pa.mapPar(function(val){return val;});
+                       </code></pre>
+                    </section>
+                    <section>
+                        <h3>PJS (javascript next...)</h3>
+                        <p>Celui qui me fache</p>
+                        <p   class="fragment">Pour:</p>
+                        <ul>
+                            <li  class="fragment">
+                                API simple et intégré au JS
+                            </li>
+                        </ul>
+                        <p   class="fragment">Contre:</p>
+                        <ul>
+                            <li  class="fragment">Impossible de gérer finement la mémoire</li>
+                            <li  class="fragment"> Reprends tous les problèmes de js et le code optimisé</li>
+                            <li  class="fragment">Sous la coupe d'intel <br><small>
+                                    (avec la meme ressource, on aurait terminé toutes les autres solutions :)</small></li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>DPS</h3>
+                        <p>Quand Opera s'y met...</p>
+                        <pre><code>
+void   add (Float32Array dst, Float32Array x, double y);               
+</code></pre>
+                        <p   class="fragment">Pour:</p>
+                        <ul>
+                            <li  class="fragment">
+                                peu intrusif et s'adapte bien à l'existant
+                            </li>
+                        </ul>
+                        <p   class="fragment">Contre:</p>
+                        <ul>
+                            <li  class="fragment">encore une API plutot qu'une solution générique...</li>
+                        </ul>
+                        <p class='fragment'>A regarder surtout avec la Geometry API qui arrive</p>
+                    </section>
+                    <section>
+                        <h3>Dart</h3>
+                        <p>Le non choix...</p>
+                        <p   class="fragment">Pour:</p>
+                        <ul>
+                            <li  class="fragment">
+                                C'est du java like
+                            </li>
+                        </ul>
+                        <p   class="fragment">Contre:</p>
+                        <ul>
+                            <li  class="fragment">c'est du java like...</li>
+                            <li  class="fragment"> demande une nouvelle VM complète, nouveau langage </li>
+                            <li  class="fragment"> Google only </li>
+                        </ul>
+                        <p class="fragment">Personnellement, je préfère l'idée de prendre un typeScript</p>
+                    </section>
+                    <section>
+                        <h3>asm.js</h3>
+
+                        <pre><code>
+function DiagModule(stdlib,foreign,heap) {
+   "use asm";
+    var sqrt = stdlib.Math.sqrt;
+    function square(x) {
+        x = +x;
+        return +(x*x);
+    }
+    function diag(x, y) {
+        x = +x;
+        y = +y;
+        return +sqrt(square(x) + square(y));
+    }
+    return { diag: diag };
+}
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h3>asm.js</h3>
+                        <p>Le moche qui marche...</p>
+                        <p   class="fragment">Pour:</p>
+                        <ul>
+                            <li  class="fragment">
+                                équivalent llvm-IR
+                            </li>
+                            <li  class="fragment">
+                                fallback sur toute VM javascript classique
+                            </li>
+                        </ul>
+                        <p   class="fragment">Contre:</p>
+                        <ul>
+                            <li  class="fragment">pas de SIMD,type ou info avancé etc...</li>
+                            <li  class="fragment"> nécessite un compilateur (emscripten)</li>
+                            <li  class="fragment"> mozilla only </li>
+                            <li class="fragment"> intéraction avec le JS très lent</li>
+                        </ul>
+                        <p class="fragment">Dans la pratique c'est relativement proche de l'idée de pNaCl mais avec du javascript en bytecode</p>
+                    </section>
+                </section>
+                <section>
+                    <h3>WebCL</h3>
+                    <a href="http://fr.slideshare.net/mikeseven/graphics-programming-on-the-web-with-webcl">Presentation from M. Bourges-Sevenier</a>
+                    <p>OpenCL for the Web</p>
+                    <ul>
+                        <li class='fragment'>code optimisé en C </li>
+                        <li class='fragment'> Notion de zones mémoire (contexte et localité de la mémoire)</p>
+                        <li class='fragment'> Notion de groupe d'éxecutions</li>
+                        <li class='fragment'> file de taches à éxécuter </li>
+                    </ul>
+                    <p class='fragment'>Avis personnel: je regrette que l'API soit si proche d'OpenCL et le choix de Google de faire
+                        renderscript plutot que de participer et influencer WebCL</p>
+
+                </section>
+
+                <section>
+                    <h3>ComputeWorker</h3>
+                    <a href="http://tallion1.free.fr">presentation des ComputeWorkers</a>
+                </section>
+            </div>
+
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.min.js"></script>
+
+        <script>
+
+            // Full list of configuration options available here:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                center: true,
+                theme: Reveal.getQueryHash().theme || 'night', // available themes are in /css/theme
+                transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+                // Optional libraries used to extend on reveal.js
+                dependencies: [
+                    {src: 'lib/js/classList.js', condition: function() {
+                            return !document.body.classList;
+                        }},
+                    {src: 'plugin/markdown/marked.js', condition: function() {
+                            return !!document.querySelector('[data-markdown]');
+                        }},
+                    {src: 'plugin/markdown/markdown.js', condition: function() {
+                            return !!document.querySelector('[data-markdown]');
+                        }},
+                    {src: 'plugin/highlight/highlight.js', async: true, callback: function() {
+                            hljs.initHighlightingOnLoad();
+                        }},
+                    {src: 'plugin/zoom-js/zoom.js', async: true, condition: function() {
+                            return !!document.body.classList;
+                        }},
+                    {src: 'plugin/notes/notes.js', async: true, condition: function() {
+                            return !!document.body.classList;
+                        }}
+                ]
+            });
+
+        </script>
+
+    </body>
+</html>
